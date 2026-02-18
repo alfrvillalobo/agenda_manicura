@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Eliminar Cita</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #fce4ec, #f8bbd0);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .card {
+            background: white;
+            padding: 40px;
+            border-radius: 22px;
+            width: 95%;
+            max-width: 500px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        h3 {
+            margin-top: 0;
+            color: #dc3545;
+            font-size: 22px;
+        }
+
+        .info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 12px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .info p {
+            margin: 8px 0;
+            color: #555;
+        }
+
+        .info strong {
+            color: #333;
+        }
+
+        .buttons {
+            margin-top: 25px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 12px 18px;
+            border-radius: 12px;
+            text-decoration: none;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545, #b02a37);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .btn-secondary {
+            background: #f1f1f1;
+            color: #555;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+            transform: translateY(-2px);
+        }
+
+        .warning {
+            font-size: 14px;
+            color: #777;
+            margin-top: 10px;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="card">
+
+    <h3>⚠ ¿Eliminar esta cita?</h3>
+
+    <div class="info">
+        <p><strong>Cliente:</strong> {{ cita.cliente }}</p>
+        <p><strong>Fecha:</strong> {{ cita.fecha }}</p>
+        <p><strong>Hora:</strong> {{ cita.hora_inicio }}</p>
+    </div>
+
+    <p class="warning">Esta acción no se puede deshacer.</p>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="buttons">
+            <button class="btn btn-danger" type="submit">
+                Sí, eliminar
+            </button>
+
+            <a class="btn btn-secondary"
+               href="{% url 'vista_dia' cita.fecha.year cita.fecha.month cita.fecha.day %}">
+               Cancelar
+            </a>
+        </div>
+    </form>
+
+</div>
+
+</body>
+</html>

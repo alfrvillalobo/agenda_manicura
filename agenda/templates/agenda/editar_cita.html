@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Editar Cita</title>
+    <style>
+        body {
+            font-family: Arial;
+            background-color: #fdf6f9;
+            padding: 30px;
+        }
+
+        form {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            max-width: 400px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            background-color: #d63384;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            width: 100%;
+        }
+
+        .volver {
+            display: inline-block;
+            margin-bottom: 15px;
+            text-decoration: none;
+            color: #d63384;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<a class="volver" href="javascript:history.back()">⬅ Volver</a>
+
+<h2>Editar Cita</h2>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Guardar Cambios</button>
+</form>
+
+</body>
+</html>

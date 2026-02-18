@@ -1,0 +1,241 @@
+<!doctype html>
+<html>
+<head>
+  <title>Detalle de Pendientes</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #fce4ec, #f8bbd0);
+    }
+
+    .container {
+      width: 95%;
+      max-width: 1400px;
+      margin: 40px auto;
+    }
+
+    .menu {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin-bottom: 30px;
+    }
+
+    .menu a {
+      text-decoration: none;
+      font-weight: 600;
+      color: #d63384;
+      transition: 0.2s;
+    }
+
+    .menu a:hover {
+      color: #c2185b;
+    }
+
+    h2 {
+      text-align: center;
+      color: #d63384;
+      margin-bottom: 30px;
+    }
+
+    /* RESUMEN CARDS */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 25px;
+      margin-bottom: 40px;
+    }
+
+    .card {
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+      text-align: center;
+    }
+
+    .card h3 {
+      margin: 0;
+      font-size: 14px;
+      color: #777;
+      font-weight: 500;
+    }
+
+    .numero {
+      margin-top: 10px;
+      font-size: 32px;
+      font-weight: bold;
+    }
+
+    .rojo {
+      color: #c62828;
+    }
+
+    .amarillo {
+      color: #f9a825;
+    }
+
+    /* TABLAS */
+    h3 {
+      color: #d63384;
+      margin-bottom: 15px;
+    }
+
+    .tabla-card {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+      overflow: hidden;
+      margin-bottom: 40px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th {
+      background-color: #fde2ec;
+      padding: 15px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    td {
+      padding: 14px;
+      border-bottom: 1px solid #f0f0f0;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    tr:hover {
+      background-color: #fff5f9;
+    }
+
+    .empty {
+      padding: 25px;
+      text-align: center;
+      color: #888;
+    }
+
+    .btn-volver {
+      display: inline-block;
+      margin-bottom: 25px;
+      padding: 10px 18px;
+      background: linear-gradient(135deg, #d63384, #c2185b);
+      color: white;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: 0.2s;
+    }
+
+    .btn-volver:hover {
+      transform: translateY(-2px);
+    }
+
+  </style>
+</head>
+
+<body>
+{% load formatos %}
+{% load humanize %}
+
+<div class="container">
+
+  <div class="menu">
+    <a href="/">📅 Agenda</a>
+    <a href="{% url 'dashboard_ingresos' %}?mes={{ mes }}&anio={{ anio }}">💰 Ingresos</a>
+    <a href="{% url 'lista_clientes' %}">👩‍💼 Clientes</a>
+  </div>
+
+  <h2>Pendientes de {{ mes }}/{{ anio }}</h2>
+
+  <a class="btn-volver" href="{% url 'dashboard_ingresos' %}?mes={{ mes }}&anio={{ anio }}">
+    ← Volver al Dashboard
+  </a>
+
+  <!-- RESUMEN -->
+  <div class="stats">
+
+    <div class="card">
+      <h3>Clientes con deuda</h3>
+      <div class="numero rojo">
+        {{ cantidad_deudores }}
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Citas sin precio definido</h3>
+      <div class="numero amarillo">
+        {{ cantidad_sin_precio }}
+      </div>
+    </div>
+
+  </div>
+
+  <!-- DEUDORES -->
+  <h3>Detalle de deudores</h3>
+
+  <div class="tabla-card">
+    <table>
+      <tr>
+        <th>Fecha</th>
+        <th>Cliente</th>
+        <th>Precio Total</th>
+        <th>Total Pagado</th>
+        <th>Saldo</th>
+      </tr>
+
+      {% for cita in deudores %}
+      <tr>
+        <td>{{ cita.fecha|date:"d/m/Y" }}</td>
+        <td>{{ cita.cliente.nombre }}</td>
+        <td>{{ cita.precio_total|clp}}</td>
+        <td>{{ cita.total_pagado|clp }}</td>
+        <td class="rojo">
+            {{ cita.saldo_pendiente|clp }}
+        </td>
+
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="5" class="empty">
+          No hay deudores este mes 🎉
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+
+  <!-- SIN PRECIO -->
+  <h3>Citas sin precio definido</h3>
+
+  <div class="tabla-card">
+    <table>
+      <tr>
+        <th>Fecha</th>
+        <th>Cliente</th>
+      </tr>
+
+      {% for cita in sin_precio %}
+      <tr>
+        <td>{{ cita.fecha|date:"d/m/Y" }}</td>
+        <td>{{ cita.cliente.nombre }}</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="2" class="empty">
+          Todas las citas tienen precio definido ✅
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+
+</div>
+
+</body>
+</html>

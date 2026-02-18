@@ -1,0 +1,247 @@
+<!doctype html>
+<html>
+<head>
+    <title>Citas del día</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fdf6f9;
+            padding: 30px;
+        }
+
+        h2 {
+            margin-bottom: 10px;
+        }
+
+        .volver {
+            margin-bottom: 20px;
+            display: inline-block;
+            text-decoration: none;
+            color: #d63384;
+            font-weight: bold;
+        }
+
+        .card {
+            background: white;
+            padding: 18px;
+            margin-bottom: 14px;
+            border-radius: 12px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        /* HEADER MÁS COMPACTO */
+        .header-cita {
+            display: flex;
+            align-items: center;
+            gap: 20px; /* controla separación */
+            margin-bottom: 10px;
+        }
+
+        .cliente {
+            font-weight: 600;
+            font-size: 16px;
+            min-width: 180px;
+        }
+
+        .hora {
+            font-weight: bold;
+            color: #d63384;
+        }
+
+        .estado {
+            font-size: 13px;
+            font-weight: bold;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        /* BADGES */
+        .estado.reservada {
+            background-color: #e9ecef;
+            color: #6c757d;
+        }
+
+        .estado.abono {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .estado.pagado {
+            background-color: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .estado.cancelada {
+            background-color: #f8d7da;
+            color: #842029;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #eee;
+            margin: 10px 0;
+        }
+
+        .resumen-financiero {
+            font-size: 13px;
+            margin-top: 10px;
+            line-height: 1.6;
+            color: #444;
+        }
+
+        .saldo-cero {
+            color: #198754;
+            font-weight: bold;
+        }
+
+        .saldo-pendiente {
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .expirada {
+            margin-top: 8px;
+            font-size: 12px;
+            color: #dc3545;
+        }
+
+        .acciones {
+            margin-top: 12px;
+        }
+
+        .acciones a {
+            font-size: 13px;
+            margin-right: 14px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .editar {
+            color: #d63384;
+        }
+
+        .eliminar {
+            color: #dc3545;
+        }
+
+        .registrar {
+            color: #198754;
+        }
+
+        .btn-crear {
+            display: inline-block;
+            margin-top: 25px;
+            padding: 10px 15px;
+            background-color: #d63384;
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+{% load formatos %}
+
+<a class="volver" href="/">⬅ Volver al calendario</a>
+
+<h2>Citas del {{ fecha }}</h2>
+
+{% if citas %}
+    {% for cita in citas %}
+        <div class="card">
+
+            <!-- HEADER COMPACTO -->
+            <div class="header-cita">
+
+                <div class="cliente">
+                    {{ cita.cliente }}
+                </div>
+
+                <div class="hora">
+                    {{ cita.hora_inicio }}
+                </div>
+
+                <div class="estado {{ cita.estado }}">
+                    {{ cita.get_estado_display }}
+                </div>
+
+            </div>
+
+            <hr>
+
+            <div class="resumen-financiero">
+
+                <div>
+                    <strong>Precio total:</strong>
+                    {% if cita.precio_total %}
+                        {{ cita.precio_total|clp }}
+                    {% else %}
+                        No definido
+                    {% endif %}
+                </div>
+
+                <div>
+                    <strong>Total pagado:</strong>
+                    {{ cita.total_pagado|clp }}
+                </div>
+
+                <div>
+                    <strong>Saldo pendiente:</strong>
+                    {% if cita.saldo_pendiente != None %}
+                        {% if cita.saldo_pendiente == 0 %}
+                            <span class="saldo-cero">$0</span>
+                        {% else %}
+                            <span class="saldo-pendiente">
+                                {{ cita.saldo_pendiente|clp }}
+                            </span>
+                        {% endif %}
+                    {% else %}
+                        —
+                    {% endif %}
+                </div>
+
+                <div>
+                    <strong>Pagos realizados:</strong>
+                    {{ cita.pagos.count }}
+                </div>
+
+            </div>
+
+            {% if cita.ya_expirada %}
+                <div class="expirada">
+                    ⚠ Cita expirada (más de 12 horas desde inicio)
+                </div>
+            {% endif %}
+
+            <div class="acciones">
+
+                <a class="editar" href="{% url 'editar_cita' cita.id %}">
+                    ✏ Editar
+                </a>
+
+                <a class="eliminar" href="{% url 'eliminar_cita' cita.id %}">
+                    🗑 Eliminar
+                </a>
+
+                {% if cita.estado != "pagado" and cita.estado != "cancelada" %}
+                    <a class="registrar" href="{% url 'registrar_pago' cita.id %}">
+                        💰 Registrar pago
+                    </a>
+                {% endif %}
+
+            </div>
+
+        </div>
+    {% endfor %}
+{% else %}
+    <p>No hay citas para este día.</p>
+{% endif %}
+
+<a class="btn-crear"
+   href="{% url 'crear_cita_fecha' fecha.year fecha.month fecha.day %}">
+    + Nueva cita
+</a>
+
+</body>
+</html>

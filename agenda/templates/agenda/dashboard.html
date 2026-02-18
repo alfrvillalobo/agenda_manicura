@@ -1,0 +1,255 @@
+<!doctype html>
+<html>
+<head>
+  <title>Dashboard de Ingresos</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #fce4ec, #f8bbd0);
+    }
+
+    .container {
+      width: 95%;
+      max-width: 1400px;
+      margin: 40px auto;
+    }
+
+    /* NAV */
+    .menu {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin-bottom: 30px;
+    }
+
+    .menu a {
+      text-decoration: none;
+      font-weight: 600;
+      color: #d63384;
+      transition: 0.2s;
+    }
+
+    .menu a:hover {
+      color: #c2185b;
+    }
+
+    h2 {
+      text-align: center;
+      color: #d63384;
+      margin-bottom: 25px;
+    }
+
+    /* FILTRO */
+    .filtro {
+      background: white;
+      padding: 20px;
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .filtro input {
+      padding: 8px;
+      margin: 0 10px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+    }
+
+    .filtro button {
+      padding: 8px 16px;
+      background: linear-gradient(135deg, #d63384, #c2185b);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .filtro button:hover {
+      transform: translateY(-2px);
+    }
+
+    /* METRICAS */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 25px;
+      margin-bottom: 40px;
+    }
+
+    .card {
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+      text-align: center;
+      transition: 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 45px rgba(0,0,0,0.12);
+    }
+
+    .card p {
+      margin: 0;
+      font-size: 14px;
+      color: #777;
+    }
+
+    .monto {
+      margin-top: 10px;
+      font-size: 28px;
+      font-weight: bold;
+      color: #d63384;
+    }
+
+    /* SOLO pendiente en rojo */
+    .stats a:nth-child(3) .monto {
+      color: #c62828;
+    }
+
+    /* TABLA */
+    h3 {
+      color: #d63384;
+      margin-bottom: 15px;
+    }
+
+    .tabla-card {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th {
+      background-color: #fde2ec;
+      padding: 15px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    td {
+      padding: 14px;
+      border-bottom: 1px solid #f0f0f0;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    tr:hover {
+      background-color: #fff5f9;
+    }
+
+    .empty {
+      padding: 25px;
+      text-align: center;
+      color: #888;
+    }
+
+    @media (max-width: 768px) {
+      .filtro input {
+        display: block;
+        margin: 10px auto;
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+{% load formatos %}
+{% load humanize %}
+
+<div class="container">
+
+  <div class="menu">
+    <a href="/">📅 Agenda</a>
+    <a href="{% url 'dashboard_ingresos' %}">💰 Ingresos</a>
+    <a href="{% url 'lista_clientes' %}">👩‍💼 Clientes</a>
+  </div>
+
+  <h2>Ingresos de {{ mes_nombre }} {{ anio }}</h2>
+
+  <!-- FILTRO -->
+  <div class="filtro">
+    <form method="get">
+      <label>Mes:</label>
+      <input type="number" name="mes" value="{{ mes }}" min="1" max="12">
+
+      <label>Año:</label>
+      <input type="number" name="anio" value="{{ anio }}">
+
+      <button type="submit">Ver</button>
+    </form>
+  </div>
+
+  <!-- METRICAS -->
+  <div class="stats">
+
+    <div class="card">
+      <p>Total facturado</p>
+      <div class="monto">
+        {{ total_facturado|clp}}
+      </div>
+    </div>
+
+    <div class="card">
+      <p>Total pagado</p>
+      <div class="monto">
+        {{ total_pagado|clp}}
+      </div>
+    </div>
+
+    <!-- CARD CLICKEABLE -->
+    <a href="{% url 'detalle_pendientes' %}?mes={{ mes }}&anio={{ anio }}" 
+       style="text-decoration:none; color:inherit;">
+
+      <div class="card" style="cursor:pointer;">
+        <p>Total pendiente</p>
+        <div class="monto">
+          {{ total_pendiente|clp}}
+        </div>
+      </div>
+
+    </a>
+
+  </div>
+
+  <!-- TABLA -->
+  <h3>Ingresos por día</h3>
+
+  <div class="tabla-card">
+    <table>
+      <tr>
+        <th>Fecha</th>
+        <th>Total del día</th>
+      </tr>
+
+      {% for dia in ingresos_por_dia %}
+      <tr>
+        <td>{{ dia.fecha|date:"d/m/Y" }}</td>
+        <td>{{ dia.total|clp}}</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="2" class="empty">
+          No hay ingresos este mes.
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+
+</div>
+
+</body>
+</html>

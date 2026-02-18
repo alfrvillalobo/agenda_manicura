@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Clientes</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #fce4ec, #f8bbd0);
+        }
+
+        .container {
+            width: 95%;
+            max-width: 1500px;
+            margin: 40px auto;
+        }
+
+        /* NAVBAR */
+        .menu {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+
+        .menu a {
+            text-decoration: none;
+            font-weight: 600;
+            color: #d63384;
+            transition: 0.2s;
+        }
+
+        .menu a:hover {
+            color: #c2185b;
+        }
+
+        /* HEADER */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            margin: 0;
+            color: #d63384;
+        }
+
+        .btn-nuevo {
+            padding: 12px 22px;
+            background: linear-gradient(135deg, #d63384, #c2185b);
+            color: white;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
+            box-shadow: 0 8px 20px rgba(214,51,132,0.3);
+        }
+
+        .btn-nuevo:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(194,24,91,0.4);
+        }
+
+
+
+        /* TABLE CARD */
+        .card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background-color: #fde2ec;
+            padding: 15px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        td {
+            padding: 14px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        tr:hover {
+            background-color: #fff5f9;
+        }
+
+        .inactivo {
+            opacity: 0.5;
+        }
+
+        .estado-activo {
+            color: green;
+            font-weight: 600;
+        }
+
+        .estado-inactivo {
+            color: red;
+            font-weight: 600;
+        }
+
+        .btn-editar {
+            padding: 6px 12px;
+            background-color: #f8bbd0;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            color: #333;
+            transition: 0.2s;
+        }
+
+        .btn-editar:hover {
+            background-color: #f48fb1;
+        }
+
+        .empty {
+            padding: 30px;
+            text-align: center;
+            color: #888;
+        }
+
+        @media (max-width: 768px) {
+            th, td {
+                font-size: 12px;
+                padding: 8px;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="menu">
+        <a href="/">📅 Agenda</a>
+        <a href="{% url 'dashboard_ingresos' %}">💰 Dashboard</a>
+        <a href="{% url 'lista_clientes' %}">👩‍💼 Clientes</a>
+    </div>
+
+    <div class="header">
+        <h2>Lista de Clientes</h2>
+        <a class="btn-nuevo" href="{% url 'crear_cliente' %}">
+            Nuevo Cliente
+        </a>
+    </div>
+
+    <div class="card">
+        <table>
+            <tr>
+                <th>Nombre</th>
+                <th>Instagram</th>
+                <th>Teléfono</th>
+                <th>Total citas</th>
+                <th>Última cita</th>
+                <th>Notas</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+
+            {% for cliente in clientes %}
+            <tr class="{% if not cliente.activo %}inactivo{% endif %}">
+                <td><strong>{{ cliente.nombre }}</strong></td>
+                <td>{{ cliente.instagram|default:"-" }}</td>
+                <td>{{ cliente.telefono|default:"-" }}</td>
+                <td>{{ cliente.total_citas }}</td>
+
+                <td>
+                    {% if cliente.ultima_cita %}
+                        {{ cliente.ultima_cita|date:"d/m/Y" }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+
+                <td>{{ cliente.notas|default:"-"|truncatechars:30 }}</td>
+
+                <td>
+                    {% if cliente.activo %}
+                        <span class="estado-activo">Activo</span>
+                    {% else %}
+                        <span class="estado-inactivo">Inactivo</span>
+                    {% endif %}
+                </td>
+
+                <td>
+                    <a class="btn-editar" href="{% url 'editar_cliente' cliente.id %}">
+                        🖊️Editar
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8" class="empty">
+                    No hay clientes registrados aún.
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+</div>
+
+</body>
+</html>

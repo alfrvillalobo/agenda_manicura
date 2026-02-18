@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Editar Cliente</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #fce4ec, #f8bbd0);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .card {
+            background: white;
+            padding: 40px;
+            width: 420px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #d63384;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            display: block;
+            color: #555;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #d63384;
+            box-shadow: 0 0 0 2px rgba(214,51,132,0.15);
+        }
+
+        textarea {
+            resize: none;
+            height: 80px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .checkbox-group input {
+            width: auto;
+            margin-right: 8px;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .btn {
+            padding: 10px 16px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            text-decoration: none;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .btn-save {
+            background-color: #d63384;
+            color: white;
+        }
+
+        .btn-save:hover {
+            background-color: #c2185b;
+        }
+
+        .btn-back {
+            background-color: #f1f1f1;
+            color: #333;
+        }
+
+        .btn-back:hover {
+            background-color: #e0e0e0;
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                width: 90%;
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Editar Cliente</h2>
+
+    <form method="post">
+        {% csrf_token %}
+
+        <label>Nombre</label>
+        <input type="text" name="nombre" value="{{ cliente.nombre }}" required>
+
+        <label>Teléfono</label>
+        <input type="text" name="telefono" value="{{ cliente.telefono }}">
+
+        <label>Email</label>
+        <input type="email" name="email" value="{{ cliente.email }}">
+
+        <label>Instagram</label>
+        <input type="text" name="instagram" value="{{ cliente.instagram }}">
+
+        <label>Notas</label>
+        <textarea name="notas">{{ cliente.notas }}</textarea>
+
+        <div class="checkbox-group">
+            <input type="checkbox" name="activo" {% if cliente.activo %}checked{% endif %}>
+            Cliente activo
+        </div>
+
+        <div class="buttons">
+            <a href="{% url 'lista_clientes' %}" class="btn btn-back">
+                ← Volver
+            </a>
+
+            <button type="submit" class="btn btn-save">
+                Guardar cambios
+            </button>
+        </div>
+
+    </form>
+</div>
+
+</body>
+</html>

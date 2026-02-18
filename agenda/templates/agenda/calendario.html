@@ -1,0 +1,225 @@
+<!doctype html>
+<html>
+<head>
+  <title>Agenda Mensual</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #fce4ec, #f8bbd0);
+    }
+
+    .container {
+      width: 95%;
+      max-width: 1400px;
+      margin: 40px auto;
+    }
+
+    /* MENU */
+    .menu {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin-bottom: 30px;
+    }
+
+    .menu a {
+      text-decoration: none;
+      font-weight: 600;
+      color: #d63384;
+      transition: 0.2s;
+    }
+
+    .menu a:hover {
+      color: #c2185b;
+    }
+
+    /* HEADER MES */
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      background: white;
+      padding: 20px 30px;
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+    }
+
+    .nav a {
+      text-decoration: none;
+      font-weight: 600;
+      color: #d63384;
+      transition: 0.2s;
+    }
+
+    .nav a:hover {
+      transform: translateX(3px);
+    }
+
+    .nav h2 {
+      margin: 0;
+      color: #d63384;
+    }
+
+    /* CALENDARIO */
+    .calendar-card {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th {
+      background-color: #fde2ec;
+      padding: 15px;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    td {
+      border: 1px solid #f3f3f3;
+      height: 110px;
+      vertical-align: top;
+      padding: 10px;
+      transition: 0.2s;
+      position: relative;
+    }
+
+    td:hover {
+      background-color: #fff5f9;
+      cursor: pointer;
+    }
+
+    td a {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      height: 100%;
+    }
+
+    .dia-numero {
+      font-weight: bold;
+      font-size: 16px;
+      color: #333;
+    }
+
+    .citas {
+      font-size: 12px;
+      margin-top: 6px;
+      padding: 4px 8px;
+      border-radius: 20px;
+      display: inline-block;
+      font-weight: 600;
+    }
+
+    /* ESTADOS */
+    .lleno {
+      background-color: #f8bbd0;
+    }
+
+    .medio {
+      background-color: #fff3cd;
+    }
+
+    .vacio {
+      background-color: #e8f5e9;
+    }
+
+    .lleno .citas {
+      background-color: #c2185b;
+      color: white;
+    }
+
+    .medio .citas {
+      background-color: #ffb300;
+      color: white;
+    }
+
+    .vacio .citas {
+      background-color: #4caf50;
+      color: white;
+    }
+
+    @media (max-width: 768px) {
+      td {
+        height: 80px;
+        padding: 6px;
+      }
+
+      .nav {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="menu">
+    <a href="/">📅 Agenda</a>
+    <a href="{% url 'dashboard_ingresos' %}">💰 Ingresos</a>
+    <a href="{% url 'lista_clientes' %}">👩‍💼 Clientes</a>
+  </div>
+
+  <div class="nav">
+    <a href="?mes={{ mes_anterior }}&anio={{ anio_anterior }}">
+      ⬅ Mes anterior
+    </a>
+
+    <h2>Agenda {{ mes }}/{{ anio }}</h2>
+
+    <a href="?mes={{ mes_siguiente }}&anio={{ anio_siguiente }}">
+      Mes siguiente ➡
+    </a>
+  </div>
+
+  <div class="calendar-card">
+    <table>
+      <tr>
+        <th>Lun</th>
+        <th>Mar</th>
+        <th>Mié</th>
+        <th>Jue</th>
+        <th>Vie</th>
+        <th>Sáb</th>
+        <th>Dom</th>
+      </tr>
+
+      {% for semana in calendario %}
+      <tr>
+        {% for dia in semana %}
+          {% if dia %}
+            <td class="{{ dia.estado }}">
+              <a href="{% url 'vista_dia' anio mes dia.dia %}">
+                <div class="dia-numero">{{ dia.dia }}</div>
+                <div class="citas">
+                  {{ dia.cantidad }} citas
+                </div>
+              </a>
+            </td>
+          {% else %}
+            <td></td>
+          {% endif %}
+        {% endfor %}
+      </tr>
+      {% endfor %}
+
+    </table>
+  </div>
+
+</div>
+
+</body>
+</html>
