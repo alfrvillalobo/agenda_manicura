@@ -2,55 +2,127 @@
 <html>
 <head>
     <title>Editar Cita</title>
+
     <style>
         body {
-            font-family: Arial;
-            background-color: #fdf6f9;
-            padding: 30px;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #fce4ec, #f8bbd0);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
 
-        form {
+        .card {
             background: white;
-            padding: 20px;
-            border-radius: 12px;
-            max-width: 400px;
+            padding: 40px;
+            width: 450px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
         }
 
-        input, select {
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #d63384;
+        }
+
+        form p {
+            margin-bottom: 18px;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #555;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input, select, textarea {
             width: 100%;
-            padding: 8px;
-            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+            transition: 0.2s;
         }
 
-        button {
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #d63384;
+            box-shadow: 0 0 0 2px rgba(214,51,132,0.15);
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 10px 16px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            text-decoration: none;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .btn-back {
+            background-color: #f1f1f1;
+            color: #333;
+        }
+
+        .btn-back:hover {
+            background-color: #e0e0e0;
+        }
+
+        .btn-primary {
             background-color: #d63384;
             color: white;
-            padding: 10px;
-            border: none;
-            border-radius: 8px;
-            width: 100%;
         }
 
-        .volver {
-            display: inline-block;
-            margin-bottom: 15px;
-            text-decoration: none;
-            color: #d63384;
-            font-weight: bold;
+        .btn-primary:hover {
+            background-color: #b52a6f;
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                width: 90%;
+                padding: 25px;
+            }
         }
     </style>
 </head>
 <body>
 
-<a class="volver" href="javascript:history.back()">⬅ Volver</a>
+<div class="card">
 
-<h2>Editar Cita</h2>
+    <h2>Editar Cita</h2>
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Guardar Cambios</button>
-</form>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <div class="buttons">
+            <a href="javascript:history.back()" class="btn btn-back">
+                ← Volver
+            </a>
+
+            <button type="submit" class="btn btn-primary">
+                Guardar Cambios
+            </button>
+        </div>
+    </form>
+
+</div>
 
 </body>
 </html>

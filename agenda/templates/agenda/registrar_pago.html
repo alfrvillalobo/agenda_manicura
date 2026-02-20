@@ -2,49 +2,175 @@
 <html>
 <head>
     <title>Registrar Pago</title>
+
     <style>
         body {
-            font-family: Arial;
-            background-color: #fdf6f9;
-            padding: 30px;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #fce4ec, #f8bbd0);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
 
         .card {
             background: white;
-            padding: 20px;
-            border-radius: 12px;
-            max-width: 400px;
+            padding: 40px;
+            width: 420px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #d63384;
+        }
+
+        .info {
+            font-size: 14px;
+            margin-bottom: 20px;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .info strong {
+            color: #333;
+        }
+
+        .saldo {
+            font-weight: 600;
+        }
+
+        .saldo.pendiente {
+            color: #dc3545;
+        }
+
+        .saldo.pagado {
+            color: #198754;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 5px;
+            display: block;
+            color: #555;
         }
 
         input, select {
-            padding: 8px;
             width: 100%;
-            margin-top: 10px;
-            margin-bottom: 15px;
+            padding: 10px;
+            margin-bottom: 18px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #d63384;
+            box-shadow: 0 0 0 2px rgba(214,51,132,0.15);
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
         }
 
         .btn {
-            padding: 8px 12px;
+            flex: 1;
+            padding: 10px 16px;
             border-radius: 8px;
             border: none;
+            font-weight: 600;
             cursor: pointer;
+            transition: 0.2s;
+            text-decoration: none;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .btn-back {
+            background-color: #f1f1f1;
+            color: #333;
+        }
+
+        .btn-back:hover {
+            background-color: #e0e0e0;
         }
 
         .btn-success {
             background-color: #198754;
             color: white;
         }
+
+        .btn-success:hover {
+            background-color: #157347;
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                width: 90%;
+                padding: 25px;
+            }
+        }
     </style>
 </head>
 <body>
-
+{% load formatos %}
 <div class="card">
-    <h3>Registrar pago</h3>
 
-    <p><strong>Cliente:</strong> {{ cita.cliente }}</p>
-    <p><strong>Precio total:</strong> {{ cita.precio_total }}</p>
-    <p><strong>Total pagado:</strong> {{ cita.total_pagado }}</p>
-    <p><strong>Saldo pendiente:</strong> {{ cita.saldo_pendiente }}</p>
+    <h2>Registrar Pago</h2>
+
+    <div class="info">
+
+    <div><strong>Cliente:</strong> {{ cita.cliente }}</div>
+
+    <div>
+        <strong>Precio total:</strong>
+        {% if cita.precio_total %}
+            {{ cita.precio_total|clp }}
+        {% else %}
+            $0
+        {% endif %}
+    </div>
+
+
+    <div><strong>Total pagado:</strong> {{ cita.total_pagado|clp }}</div>
+
+    <div class="saldo-box
+        {% if cita.precio_total %}
+            {% if cita.saldo_pendiente > 0 %}pendiente{% else %}pagado{% endif %}
+        {% endif %}
+    ">
+
+        <span class="saldo-label">
+            {% if not cita.precio_total %}
+                Debe asignar el precio total
+            {% elif cita.saldo_pendiente > 0 %}
+                Saldo pendiente
+            {% else %}
+                Pagado
+            {% endif %}
+        </span>
+
+        <span class="saldo-valor">
+            {% if cita.precio_total %}
+                {{ cita.saldo_pendiente|clp }}
+            {% else %}
+                
+            {% endif %}
+        </span>
+
+    </div>
+
+
+</div>
+
 
     <form method="post">
         {% csrf_token %}
@@ -56,14 +182,20 @@
         <select name="metodo" required>
             <option value="efectivo">Efectivo</option>
             <option value="transferencia">Transferencia</option>
-            <option value="debito">Débito</option>
-            <option value="credito">Crédito</option>
         </select>
 
-        <button class="btn btn-success" type="submit">
-            Confirmar Pago
-        </button>
+        <div class="buttons">
+            <a href="{% url 'vista_dia' cita.fecha.year cita.fecha.month cita.fecha.day %}" class="btn btn-back">
+                ← Volver
+            </a>
+
+            <button class="btn btn-success" type="submit">
+                Confirmar Pago
+            </button>
+        </div>
+
     </form>
+
 </div>
 
 </body>

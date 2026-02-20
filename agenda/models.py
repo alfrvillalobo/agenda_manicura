@@ -17,8 +17,6 @@ class Cita(models.Model):
     ESTADOS = [
         ("reservada", "Reservada"),
         ("abono", "Abono"),
-        ("pagado", "Pagado"),
-        ("cancelada", "Cancelada"),
     ]
 
     cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE)

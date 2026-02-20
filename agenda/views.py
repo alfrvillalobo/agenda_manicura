@@ -102,11 +102,27 @@ def crear_cita(request, anio=None, mes=None, dia=None):
         form = CitaForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect("calendario")
+
+            # 🔁 Redirige al día después de guardar
+            return redirect(
+                "vista_dia",
+                anio=anio,
+                mes=mes,
+                dia=dia
+            )
     else:
         form = CitaForm(initial={"fecha": fecha_inicial})
 
-    return render(request, "agenda/crear_cita.html", {"form": form})
+    return render(
+        request,
+        "agenda/crear_cita.html",
+        {
+            "form": form,
+            "anio": anio,
+            "mes": mes,
+            "dia": dia,
+        }
+    )
 
 def editar_cita(request, cita_id):
     cita = get_object_or_404(Cita, id=cita_id)

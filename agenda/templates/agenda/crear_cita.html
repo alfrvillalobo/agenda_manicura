@@ -1,115 +1,113 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<head>
+  <head>
     <title>Nueva Cita</title>
 
     <style>
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #fce4ec, #f8bbd0);
-        }
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #fce4ec, #f8bbd0);
+      }
 
-        .container {
-            width: 95%;
-            max-width: 600px;
-            margin: 60px auto;
-        }
+      .container {
+        width: 95%;
+        max-width: 600px;
+        margin: 60px auto;
+      }
 
-        h2 {
-            text-align: center;
-            color: #d63384;
-            margin-bottom: 30px;
-        }
+      h2 {
+        text-align: center;
+        color: #d63384;
+        margin-bottom: 30px;
+      }
 
-        .card {
-            background: white;
-            padding: 35px;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
-        }
+      .card {
+        background: white;
+        padding: 35px;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+      }
 
-        form p {
-            margin-bottom: 18px;
-        }
+      form p {
+        margin-bottom: 18px;
+      }
 
-        label {
-            font-weight: 600;
-            color: #555;
-            display: block;
-            margin-bottom: 5px;
-        }
+      label {
+        font-weight: 600;
+        color: #555;
+        display: block;
+        margin-bottom: 5px;
+      }
 
-        input, select {
-            width: 100%;
-            padding: 10px;
-            border-radius: 10px;
-            border: 1px solid #ddd;
-            font-size: 14px;
-            transition: 0.2s;
-        }
+      input,
+      select {
+        width: 100%;
+        padding: 10px;
+        border-radius: 10px;
+        border: 1px solid #ddd;
+        font-size: 14px;
+        transition: 0.2s;
+      }
 
-        input:focus, select:focus {
-            border-color: #d63384;
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(214,51,132,0.1);
-        }
+      input:focus,
+      select:focus {
+        border-color: #d63384;
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(214, 51, 132, 0.1);
+      }
 
-        .btn-guardar {
-            margin-top: 15px;
-            background: linear-gradient(135deg, #d63384, #c2185b);
-            color: white;
-            padding: 12px;
-            border: none;
-            border-radius: 12px;
-            width: 100%;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-        }
+      .btn-guardar {
+        margin-top: 15px;
+        background: linear-gradient(135deg, #d63384, #c2185b);
+        color: white;
+        padding: 12px;
+        border: none;
+        border-radius: 12px;
+        width: 100%;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.2s;
+      }
 
-        .btn-guardar:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
-        }
+      .btn-guardar:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+      }
 
-        .btn-volver {
-            display: inline-block;
-            margin-bottom: 25px;
-            padding: 8px 16px;
-            background: white;
-            border-radius: 10px;
-            text-decoration: none;
-            font-weight: 600;
-            color: #d63384;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
-            transition: 0.2s;
-        }
+      .btn-volver {
+        display: inline-block;
+        margin-bottom: 25px;
+        padding: 8px 16px;
+        background: white;
+        border-radius: 10px;
+        text-decoration: none;
+        font-weight: 600;
+        color: #d63384;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+        transition: 0.2s;
+      }
 
-        .btn-volver:hover {
-            transform: translateY(-2px);
-        }
-
+      .btn-volver:hover {
+        transform: translateY(-2px);
+      }
     </style>
-</head>
+  </head>
 
-<body>
+  <body>
+    <div class="container">
+      <a class="btn-volver" href="{% url 'vista_dia' anio mes dia %}">
+        ← Volver a la Agenda
+      </a>
 
-<div class="container">
+      <h2>Nueva Cita</h2>
 
-    <a class="btn-volver" href="/">← Volver a la Agenda</a>
-
-    <h2>Nueva Cita</h2>
-
-    <div class="card">
+      <div class="card">
         <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="btn-guardar">Guardar Cita</button>
+          {% csrf_token %} {{ form.as_p }}
+          <button type="submit" class="btn-guardar">Guardar Cita</button>
         </form>
+      </div>
     </div>
-
-</div>
-
-</body>
+  </body>
 </html>
